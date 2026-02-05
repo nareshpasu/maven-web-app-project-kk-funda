@@ -1,35 +1,30 @@
 node
 {
-    def mavenHome=tool name: "maven3.9.9"
-	stage('git checkout')
-	{
-      git branch: 'development', credentialsId: '8d341570-e046-4d2c-8060-33c3d5d493f7', url: 'https://github.com/gangavaramdevops/maven-web-app-project-kk-funda.git'
-	}
-	stage('compile')
-	{
-    sh  "${mavenHome}/bin/mvn compile"
-	}
-	stage('Build')
-	{
-    sh  "${mavenHome}/bin/mvn clean package"
-	}
-   stage('SQ Report')
-	{
-    sh  "${mavenHome}/bin/mvn sonar:sonar"
-	}
-	stage('Deploy into Nexus')
-	{
-    sh  "${mavenHome}/bin/mvn clean deploy"
-	}
-	stage('Deploy to Tomcat') {
+    def mavenHome=tool name: "3.9.10"
+   stage('checkout')
+   {
+   git branch: 'master', credentialsId: '94e49fbc-7fbb-4765-8c78-90e0268cda67', url: 'https://github.com/nareshpasu/maven-web-app-project-kk-funda.git'
+   }
+    stage('build')
+   {
+  sh "${mavenHome}/bin/mvn clean package"
+   }
+    stage('SonarQubeReport')
+   {
+  sh "${mavenHome}/bin/mvn clean package sonar:sonar"
+   }
+   stage('Uploadarifacttonexus')
+   {
+  sh "${mavenHome}/bin/mvn clean package sonar:sonar deploy"
+   }
+    stage('Deploy to Tomcat') {
         echo "Deploying WAR file using curl..."
 
         sh """
-            curl -u kkfunda:kkfunda \
-            --upload-file /var/lib/jenkins/workspace/jio-scripted-way-pipeline-develoment/target/maven-web-application.war \
-            "http://3.108.194.157:8080/manager/text/deploy?path=/maven-web-application&update=true"
+            curl -u kumar:kumar \
+            --upload-file /var/lib/jenkins/workspace/pipe1-script/target/maven-web-application.war \
+            "http://13.201.84.232:8080//manager/text/deploy?path=/maven-web-application&update=true"
         """
     }
 
-
-} //node closing
+}
