@@ -1,0 +1,30 @@
+node
+{
+    def mavenHome=tool name: "3.9.10"
+   stage('checkout')
+   {
+   git branch: 'master', credentialsId: '94e49fbc-7fbb-4765-8c78-90e0268cda67', url: 'https://github.com/nareshpasu/maven-web-app-project-kk-funda.git'
+   }
+    stage('build')
+   {
+  sh "${mavenHome}/bin/mvn clean package"
+   }
+    stage('SonarQubeReport')
+   {
+  sh "${mavenHome}/bin/mvn clean package sonar:sonar"
+   }
+   stage('Uploadarifacttonexus')
+   {
+  sh "${mavenHome}/bin/mvn clean package sonar:sonar deploy"
+   }
+    stage('Deploy to Tomcat') {
+        echo "Deploying WAR file using curl..."
+
+        sh """
+            curl -u kumar:kumar \
+            --upload-file /var/lib/jenkins/workspace/pipe1-script/target/maven-web-application.war \
+            "http://13.201.84.232:8080//manager/text/deploy?path=/maven-web-application&update=true"
+        """
+    }
+
+}
