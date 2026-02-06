@@ -23,7 +23,7 @@ node
         sh """
             curl -u kumar:kumar \
             --upload-file /var/lib/jenkins/workspace/pipe1-script/target/maven-web-application.war \
-            "http://13.201.84.232:8080//manager/text/deploy?path=/maven-web-application&update=true"
+            "http://65.0.91.218:8080//manager/text/deploy?path=/maven-web-application&update=true"
         """
     }
 
